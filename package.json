@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-server-watch": "webpack --config webpack.server.js --watch",
+    "build-client-watch": "webpack --config webpack.client.js --watch"
   },
   "author": "",
   "license": "ISC",
@@ -12,13 +14,15 @@
     "babel-polyfill": "^6.26.0",
     "emotion": "^9.2.12",
     "emotion-server": "^9.2.12",
+    "govuk-colours": "^1.0.3",
     "govuk-react": "^0.2.12",
     "hapi": "^17.6.4",
     "inert": "^5.1.1",
+    "linaria": "^1.0.0-alpha.15",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-emotion": "^9.2.12",
-    "react-markdown": "^4.0.3",
+    "react-markdown": "^3.3.2",
     "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
@@ -28,6 +32,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-stage-2": "^7.0.0",
     "babel-loader": "^8.0.4",
+    "npm-run-all": "^4.1.3",
     "webpack": "^4.25.0",
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4",
