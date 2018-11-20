@@ -4,20 +4,6 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { renderStylesToString } from 'emotion-server';
 import App from '../client/App';
-import { collect } from 'linaria/server';
-import fs from 'fs';
-
-const readData = fileName => {
-  return new Promise((res, rej) => {
-    fs.readFile(fileName, 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
-        rej(err);
-      }
-      res(data);
-    })
-  });
-};
 
 const getHtml = (data) => {
   const template = `
@@ -63,15 +49,8 @@ const setupServerRoute = (server) => {
     method: ['GET'],
     path: '/static/{param*}',
     handler: async (req, h) => {
-      try {
-        const data = await readData('/home/opensourcegeek/projects/transformuk/mmo-ecc-reference-data-svc/src/main/resources/db/data/species.csv')
-        const styled = renderStylesToString(renderToString(<App speciesData={data} />));
-        return h.response(getHtml(styled));
-
-      } catch(e) {
-        console.error(e);
-        return h.response(getHtml(<h5>Error!!!!!!!!!!!!1</h5>));
-      }
+      const styled = renderStylesToString(renderToString(<App />));
+      return h.response(getHtml(styled));
       
     }
   });
@@ -101,51 +80,20 @@ const setupStaticContentHandler = (server) => {
 };
 
 const start = async () => {
+  const port = 10001;
   const server = Hapi.Server({
-    port: 10001
+    port
   });
   await server.register(require('inert'));
   setupStaticContentHandler(server);
   setupServerRoute(server);
   setupClientRoute(server);
+  console.info('Starting server on:', port);
   await server.start();
 }
 
 
-const delay = n => {
-  return new Promise((res, rej) => {
-    setTimeout(() => {
-      res();
-    }, n);
-  });
-}
-
-const printAfterAwait = async () => {
-  const someItems = [1,2];
-  let items = [];
-  // someItems.map(async i => {
-  //   await delay(2000);
-  //   items.push(i * 2);
-  //   console.log('After waiting', items);
-  // });
-  // for(let i=0; i<someItems.length; i++) {
-  //   await delay(2000);
-  //   items.push(someItems[i] * 2);
-  //   console.log('After waiting', items);
-  // }
-  const promises = someItems.map(() => {   
-    return delay(2000);
-  });
-
-  const allCompleted = await Promise.all(promises);
-  // [ {response}, {response} ]
-
-  // console.log(items);
-  console.log('Finished');
-}
-
 (async () => {
-  await printAfterAwait();
   start();
 })();
 
